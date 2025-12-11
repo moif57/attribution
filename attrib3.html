@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Gestionnaire de Fonctions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            padding-bottom: 30px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            padding: 10px;
+        }
+
+        .date-display {
+            text-align: center;
+            color: white;
+            font-size: 1em;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.15);
+            padding: 12px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        select {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 18px;
+            background: white;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 18px;
+            background: white;
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: transform 0.1s;
+            margin-top: 10px;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .attributions-list {
+            list-style: none;
+        }
+
+        .attribution-item {
+            background: #f8f9fa;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.05em;
+        }
+
+        .fonction-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .fonction-podium {
+            background: #ffd700;
+            color: #333;
+        }
+
+        .fonction-perche {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .stats-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 1em;
+        }
+
+        .stats-table th {
+            background: #667eea;
+            color: white;
+            padding: 14px 8px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            font-size: 0.95em;
+        }
+
+        .stats-table td {
+            padding: 14px 8px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stats-table tr:active {
+            background: #f0f0f0;
+        }
+
+        .alert {
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            animation: slideIn 0.3s;
+            font-size: 1em;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: #999;
+            font-style: italic;
+            font-size: 1em;
+        }
+
+        /* Boutons d'action dans le tableau */
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .btn-action {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.1s;
+        }
+
+        .btn-action:active {
+            transform: scale(0.95);
+        }
+
+        .btn-edit {
+            background: #FFA500;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 14px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-confirm {
+            flex: 1;
+            padding: 14px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            flex: 1;
+            padding: 14px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Tabs pour navigation mobile */
+        .tabs {
+            display: flex;
+            gap: 3px;
+            margin-bottom: 15px;
+            justify-content: space-between;
+        }
+
+        .tab {
+            padding: 10px 6px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            flex: 1;
+            text-align: center;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Amélioration du scroll */
+        ::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestion Fonctions</h1>
+        
+        <div class="date-display" id="dateDisplay"></div>
+
+        <div id="alertContainer"></div>
+
+        <!-- Navigation par onglets -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('attribuer')">➕ Attribuer</button>
+            <button class="tab" onclick="switchTab('date')">📅 Date</button>
+            <button class="tab" onclick="switchTab('nom')">👤 Nom</button>
+            <button class="tab" onclick="switchTab('historique')">📋 Tout</button>
+            <button class="tab" onclick="switchTab('stats')">📊 Stats</button>
+        </div>
+
+        <!-- Onglet Attribuer -->
+        <div id="tab-attribuer" class="tab-content active">
+            <div class="card">
+                <h2>➕ Nouvelle attribution</h2>
+                <form id="attributionForm">
+                    <div class="form-group">
+                        <label for="participant">👤 Participant</label>
+                        <select id="participant" required>
+                            <option value="">Choisir...</option>
+                            <option value="Joshua Brochot">Joshua Brochot</option>
+                            <option value="Patrick Brochot">Patrick Brochot</option>
+                            <option value="Loïc Conradi">Loïc Conradi</option>
+                            <option value="Lukas Fantasia">Lukas Fantasia</option>
+                            <option value="Mario Gallo">Mario Gallo</option>
+                            <option value="Didier Gauthier">Didier Gauthier</option>
+                            <option value="Didier Grusch">Didier Grusch</option>
+                            <option value="Jean-Michel Kedaj">Jean-Michel Kedaj</option>
+                            <option value="Alain Lauzin">Alain Lauzin</option>
+                            <option value="Julien Marcon">Julien Marcon</option>
+                            <option value="Robert Marcon">Robert Marcon</option>
+                            <option value="Patrice Noël">Patrice Noël</option>
+                            <option value="Robert Picard">Robert Picard</option>
+                            <option value="Gérard Pierson">Gérard Pierson</option>
+                            <option value="Dominique Ré">Dominique Ré</option>
+                            <option value="Jérémie Rusak">Jérémie Rusak</option>
+                            <option value="Laurent Rusak"> Laurent Rusak</option>
+                            <option value="Anthony Scellini">Anthony Scellini</option>
+                            <option value="Enzo Speziale">Enzo Speziale</option>
+                            <option value="Fabio Speziale">Fabio Speziale</option>
+                            <option value="François Speziale">François Speziale</option>
+                            <option value="Robert Wolff">Robert Wolff</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fonction"> Fonction</label>
+                        <select id="fonction" required>
+                            <option value="">Choisir...</option>
+                            <option value="Podium">🎙️ Podium</option>
+                            <option value="Perche">🎤 Perche</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dateAttribution">📅 Date</label>
+                        <input type="date" id="dateAttribution" required>
+                    </div>
+                    <button type="submit">✅ Attribuer la fonction</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Onglet Par date -->
+        <div id="tab-date" class="tab-content">
+            <div class="card">
+                <h2>📅 Consulter par date</h2>
+                <div class="form-group">
+                    <label for="dateConsultation">Choisir une date</label>
+                    <input type="date" id="dateConsultation">
+                </div>
+                <ul class="attributions-list" id="attributionsDate"></ul>
+            </div>
+        </div>
+
+        <!-- Onglet Par nom -->
+        <div id="tab-nom" class="tab-content">
+            <div class="card">
+                <h2>👤 Consulter par participant</h2>
+                <div class="form-group">
+                    <label for="nomConsultation">Choisir un participant</label>
+                    <select id="nomConsultation">
+                   <option value="">Choisir un participant...</option>
+                            <option value="Joshua Brochot">Joshua Brochot</option>
+                            <option value="Patrick Brochot">Patrick Brochot</option>
+                            <option value="Loïc Conradi">Loïc Conradi</option>
+                            <option value="Lukas Fantasia">Lukas Fantasia</option>
+                            <option value="Mario Gallo">Mario Gallo</option>
+                            <option value="Didier Gauthier">Didier Gauthier</option>
+                            <option value="Didier Grusch">Didier Grusch</option>
+                            <option value="Jean-Michel Kedaj">Jean-Michel Kedaj</option>
+                            <option value="Alain Lauzin">Alain Lauzin</option>
+                            <option value="Julien Marcon">Julien Marcon</option>
+                            <option value="Robert Marcon">Robert Marcon</option>
+                            <option value="Patrice Noël">Patrice Noël</option>
+                            <option value="Robert Picard">Robert Picard</option>
+                            <option value="Gérard Pierson">Gérard Pierson</option>
+                            <option value="Dominique Ré">Dominique Ré</option>
+                            <option value="Jérémie Rusak">Jérémie Rusak</option>
+                            <option value="Laurent Rusak"> Laurent Rusak</option>
+                            <option value="Anthony Scellini">Anthony Scellini</option>
+                            <option value="Enzo Speziale">Enzo Speziale</option>
+                            <option value="Fabio Speziale">Fabio Speziale</option>
+                            <option value="François Speziale">François Speziale</option>
+                            <option value="Robert Wolff">Robert Wolff</option>
+                    </select>
+                </div>
+                <div class="stats-container">
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Fonction</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attributionsNom"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Onglet Historique complet -->
+        <div id="tab-historique" class="tab-content">
+            <div class="card">
+                <h2>📋 Historique complet</h2>
+                <div class="stats-container">
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Participant</th>
+                                <th>Fonction</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historiqueBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Onglet Stats -->
+        <div id="tab-stats" class="tab-content">
+            <div class="card">
+                <h2>📊 Statistiques</h2>
+                <div class="stats-container">
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th>Participant</th>
+                                <th>🎙️</th>
+                                <th>🎤</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="statsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de suppression -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3>🗑️ Confirmer la suppression</h3>
+            <p>Voulez-vous vraiment supprimer cette attribution ?</p>
+            <p id="deleteInfo" style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; font-size: 14px;"></p>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="fermerModal('deleteModal')">Annuler</button>
+                <button class="btn-confirm" onclick="confirmerSuppression()">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de modification -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h3>✏️ Modifier l'attribution</h3>
+            <div class="form-group">
+                <label for="editParticipant">👤 Participant</label>
+                <select id="editParticipant" required>
+                            <option value="Joshua Brochot">Joshua Brochot</option>
+                            <option value="Patrick Brochot">Patrick Brochot</option>
+                            <option value="Loïc Conradi">Loïc Conradi</option>
+                            <option value="Lukas Fantasia">Lukas Fantasia</option>
+                            <option value="Mario Gallo">Mario Gallo</option>
+                            <option value="Didier Gauthier">Didier Gauthier</option>
+                            <option value="Didier Grusch">Didier Grusch</option>
+                            <option value="Jean-Michel Kedaj">Jean-Michel Kedaj</option>
+                            <option value="Alain Lauzin">Alain Lauzin</option>
+                            <option value="Julien Marcon">Julien Marcon</option>
+                            <option value="Robert Marcon">Robert Marcon</option>
+                            <option value="Patrice Noël">Patrice Noël</option>
+                            <option value="Robert Picard">Robert Picard</option>
+                            <option value="Gérard Pierson">Gérard Pierson</option>
+                            <option value="Dominique Ré">Dominique Ré</option>
+                            <option value="Jérémie Rusak">Jérémie Rusak</option>
+                            <option value="Laurent Rusak"> Laurent Rusak</option>
+                            <option value="Anthony Scellini">Anthony Scellini</option>
+                            <option value="Enzo Speziale">Enzo Speziale</option>
+                            <option value="Fabio Speziale">Fabio Speziale</option>
+                            <option value="François Speziale">François Speziale</option>
+                            <option value="Robert Wolff">Robert Wolff</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editFonction"> Fonction</label>
+                <select id="editFonction" required>
+                    <option value="Podium">🎙️ Podium</option>
+                    <option value="Perche">🎤 Perche</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editDate">📅 Date</label>
+                <input type="date" id="editDate" required>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="fermerModal('editModal')">Annuler</button>
+                <button class="btn-save" onclick="sauvegarderModification()">Sauvegarder</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Données stockées localement
+        let historique = JSON.parse(localStorage.getItem('historique')) || {
+            attributions: [],
+            compteurs: {}
+        };
+
+        // Variable pour stocker l'index de l'attribution à modifier/supprimer
+        let indexEnCours = null;
+
+        // Navigation entre onglets
+        function switchTab(tabName) {
+            // Désactiver tous les onglets
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Activer l'onglet sélectionné
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            // Rafraîchir les données si nécessaire
+            if (tabName === 'date') {
+                afficherAttributionsParDate();
+            } else if (tabName === 'nom') {
+                afficherAttributionsParNom();
+            } else if (tabName === 'historique') {
+                afficherHistoriqueComplet();
+            } else if (tabName === 'stats') {
+                afficherStatistiques();
+            }
+        }
+
+        // Afficher la date du jour
+        function afficherDate() {
+            const options = { weekday: 'long', day: 'numeric', month: 'long' };
+            const date = new Date().toLocaleDateString('fr-FR', options);
+            document.getElementById('dateDisplay').textContent = `📆 ${date}`;
+        }
+
+        // Obtenir la date au format JJ/MM/AAAA
+        function getDateAujourdhui() {
+            const date = new Date();
+            const jour = String(date.getDate()).padStart(2, '0');
+            const mois = String(date.getMonth() + 1).padStart(2, '0');
+            const annee = date.getFullYear();
+            return `${jour}/${mois}/${annee}`;
+        }
+
+        // Afficher une alerte
+        function afficherAlerte(message) {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `<div class="alert alert-success">${message}</div>`;
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 3000);
+            // Scroller en haut
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Attribuer une fonction
+        document.getElementById('attributionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const participant = document.getElementById('participant').value;
+            const fonction = document.getElementById('fonction').value;
+            const dateInput = document.getElementById('dateAttribution').value;
+            
+            // Convertir la date du format YYYY-MM-DD en JJ/MM/AAAA
+            const [annee, mois, jour] = dateInput.split('-');
+            const date = `${jour}/${mois}/${annee}`;
+
+            // Créer l'attribution
+            const attribution = { participant, fonction, date };
+            historique.attributions.push(attribution);
+
+            // Mettre à jour les compteurs
+            if (!historique.compteurs[participant]) {
+                historique.compteurs[participant] = { Podium: 0, Perche: 0 };
+            }
+            historique.compteurs[participant][fonction]++;
+
+            // Sauvegarder
+            localStorage.setItem('historique', JSON.stringify(historique));
+
+            // Réinitialiser le formulaire
+            this.reset();
+            // Remettre la date d'aujourd'hui par défaut
+            document.getElementById('dateAttribution').value = new Date().toISOString().split('T')[0];
+
+            // Afficher message de succès
+            afficherAlerte(`✅ ${participant} → ${fonction} (${date}) !`);
+
+            // Rafraîchir l'affichage
+            afficherHistoriqueComplet();
+            afficherStatistiques();
+        });
+
+        // Convertir date JJ/MM/AAAA en AAAA-MM-JJ
+        function convertirDatePourInput(dateStr) {
+            const [jour, mois, annee] = dateStr.split('/');
+            return `${annee}-${mois}-${jour}`;
+        }
+
+        // Afficher les attributions du jour
+        function afficherAttributionsDuJour() {
+            const dateAujourdhui = getDateAujourdhui();
+            const attributionsDuJour = historique.attributions.filter(a => a.date === dateAujourdhui);
+            
+            const liste = document.getElementById('attributionsJour');
+            
+            if (!liste) return; // Si l'élément n'existe plus
+            
+            if (attributionsDuJour.length === 0) {
+                liste.innerHTML = '<div class="empty-state">Aucune attribution aujourd\'hui</div>';
+                return;
+            }
+
+            liste.innerHTML = attributionsDuJour.map(attr => `
+                <li class="attribution-item">
+                    <span><strong>${attr.participant}</strong></span>
+                    <span class="fonction-badge fonction-${attr.fonction.toLowerCase()}">${attr.fonction}</span>
+                </li>
+            `).join('');
+        }
+
+        // Afficher les attributions par date choisie
+        function afficherAttributionsParDate() {
+            const dateInput = document.getElementById('dateConsultation');
+            
+            // Définir la date d'aujourd'hui par défaut
+            if (!dateInput.value) {
+                dateInput.value = new Date().toISOString().split('T')[0];
+            }
+            
+            // Écouter les changements de date
+            dateInput.onchange = function() {
+                const dateSelectionnee = dateInput.value;
+                const [annee, mois, jour] = dateSelectionnee.split('-');
+                const dateFormatee = `${jour}/${mois}/${annee}`;
+                
+                const attributionsDate = historique.attributions.filter(a => a.date === dateFormatee);
+                const liste = document.getElementById('attributionsDate');
+                
+                if (attributionsDate.length === 0) {
+                    liste.innerHTML = '<div class="empty-state">Aucune attribution pour cette date</div>';
+                    return;
+                }
+
+                liste.innerHTML = attributionsDate.map(attr => `
+                    <li class="attribution-item">
+                        <span><strong>${attr.participant}</strong></span>
+                        <span class="fonction-badge fonction-${attr.fonction.toLowerCase()}">${attr.fonction}</span>
+                    </li>
+                `).join('');
+            };
+            
+            // Déclencher l'affichage initial
+            dateInput.onchange();
+        }
+
+        // Afficher les attributions par nom
+        function afficherAttributionsParNom() {
+            const selectNom = document.getElementById('nomConsultation');
+            
+            // Écouter les changements de participant
+            selectNom.onchange = function() {
+                const nomSelectionne = selectNom.value;
+                const tbody = document.getElementById('attributionsNom');
+                
+                if (!nomSelectionne) {
+                    tbody.innerHTML = '<tr><td colspan="2" class="empty-state">Veuillez sélectionner un participant</td></tr>';
+                    return;
+                }
+                
+                const attributionsNom = historique.attributions
+                    .filter(a => a.participant === nomSelectionne)
+                    .sort((a, b) => {
+                        const [jourA, moisA, anneeA] = a.date.split('/');
+                        const [jourB, moisB, anneeB] = b.date.split('/');
+                        const dateA = new Date(anneeA, moisA - 1, jourA);
+                        const dateB = new Date(anneeB, moisB - 1, jourB);
+                        return dateB - dateA;
+                    });
+                
+                if (attributionsNom.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="2" class="empty-state">Aucune attribution pour ce participant</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = attributionsNom.map(attr => `
+                    <tr>
+                        <td>${attr.date}</td>
+                        <td><span class="fonction-badge fonction-${attr.fonction.toLowerCase()}">${attr.fonction}</span></td>
+                    </tr>
+                `).join('');
+            };
+            
+            // Déclencher l'affichage initial si un nom est déjà sélectionné
+            if (selectNom.value) {
+                selectNom.onchange();
+            }
+        }
+
+        // Afficher l'historique complet
+        function afficherHistoriqueComplet() {
+            const tbody = document.getElementById('historiqueBody');
+            
+            if (historique.attributions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Aucune donnée</td></tr>';
+                return;
+            }
+
+            // Trier par date (plus récent en premier)
+            const attributionsTries = [...historique.attributions].sort((a, b) => {
+                const [jourA, moisA, anneeA] = a.date.split('/');
+                const [jourB, moisB, anneeB] = b.date.split('/');
+                const dateA = new Date(anneeA, moisA - 1, jourA);
+                const dateB = new Date(anneeB, moisB - 1, jourB);
+                return dateB - dateA;
+            });
+
+            tbody.innerHTML = attributionsTries.map((attr, index) => `
+                <tr>
+                    <td>${attr.date}</td>
+                    <td><strong>${attr.participant}</strong></td>
+                    <td><span class="fonction-badge fonction-${attr.fonction.toLowerCase()}">${attr.fonction}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-action btn-edit" onclick="ouvrirModalModification(${historique.attributions.indexOf(attr)})">✏️</button>
+                            <button class="btn-action btn-delete" onclick="ouvrirModalSuppression(${historique.attributions.indexOf(attr)})">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Ouvrir modal de suppression
+        function ouvrirModalSuppression(index) {
+            indexEnCours = index;
+            const attr = historique.attributions[index];
+            document.getElementById('deleteInfo').innerHTML = `
+                <strong>Date:</strong> ${attr.date}<br>
+                <strong>Participant:</strong> ${attr.participant}<br>
+                <strong>Fonction:</strong> ${attr.fonction}
+            `;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        // Confirmer la suppression
+        function confirmerSuppression() {
+            if (indexEnCours !== null) {
+                const attr = historique.attributions[indexEnCours];
+                
+                // Décrémenter le compteur
+                historique.compteurs[attr.participant][attr.fonction]--;
+                
+                // Si les deux compteurs sont à 0, supprimer le participant des compteurs
+                if (historique.compteurs[attr.participant].Podium === 0 && 
+                    historique.compteurs[attr.participant].Perche === 0) {
+                    delete historique.compteurs[attr.participant];
+                }
+                
+                // Supprimer l'attribution
+                historique.attributions.splice(indexEnCours, 1);
+                
+                // Sauvegarder
+                localStorage.setItem('historique', JSON.stringify(historique));
+                
+                // Fermer le modal
+                fermerModal('deleteModal');
+                
+                // Afficher message de succès
+                afficherAlerte('🗑️ Attribution supprimée avec succès !');
+                
+                // Rafraîchir l'affichage
+                afficherHistoriqueComplet();
+                afficherStatistiques();
+            }
+        }
+
+        // Ouvrir modal de modification
+        function ouvrirModalModification(index) {
+            indexEnCours = index;
+            const attr = historique.attributions[index];
+            
+            // Remplir les champs
+            document.getElementById('editParticipant').value = attr.participant;
+            document.getElementById('editFonction').value = attr.fonction;
+            
+            // Convertir la date
+            const [jour, mois, annee] = attr.date.split('/');
+            document.getElementById('editDate').value = `${annee}-${mois}-${jour}`;
+            
+            // Ouvrir le modal
+            document.getElementById('editModal').classList.add('show');
+        }
+
+        // Sauvegarder la modification
+        function sauvegarderModification() {
+            if (indexEnCours !== null) {
+                const ancienneAttr = historique.attributions[indexEnCours];
+                
+                // Récupérer les nouvelles valeurs
+                const nouveauParticipant = document.getElementById('editParticipant').value;
+                const nouvelleFonction = document.getElementById('editFonction').value;
+                const dateInput = document.getElementById('editDate').value;
+                const [annee, mois, jour] = dateInput.split('-');
+                const nouvelleDate = `${jour}/${mois}/${annee}`;
+                
+                // Mettre à jour les compteurs
+                // Décrémenter l'ancien
+                historique.compteurs[ancienneAttr.participant][ancienneAttr.fonction]--;
+                if (historique.compteurs[ancienneAttr.participant].Podium === 0 && 
+                    historique.compteurs[ancienneAttr.participant].Perche === 0) {
+                    delete historique.compteurs[ancienneAttr.participant];
+                }
+                
+                // Incrémenter le nouveau
+                if (!historique.compteurs[nouveauParticipant]) {
+                    historique.compteurs[nouveauParticipant] = { Podium: 0, Perche: 0 };
+                }
+                historique.compteurs[nouveauParticipant][nouvelleFonction]++;
+                
+                // Modifier l'attribution
+                historique.attributions[indexEnCours] = {
+                    participant: nouveauParticipant,
+                    fonction: nouvelleFonction,
+                    date: nouvelleDate
+                };
+                
+                // Sauvegarder
+                localStorage.setItem('historique', JSON.stringify(historique));
+                
+                // Fermer le modal
+                fermerModal('editModal');
+                
+                // Afficher message de succès
+                afficherAlerte('✅ Attribution modifiée avec succès !');
+                
+                // Rafraîchir l'affichage
+                afficherHistoriqueComplet();
+                afficherStatistiques();
+            }
+        }
+
+        // Fermer un modal
+        function fermerModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+            indexEnCours = null;
+        }
+
+        // Fermer modal si clic en dehors
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('show');
+                indexEnCours = null;
+            }
+        }
+
+        // Afficher les statistiques
+        function afficherStatistiques() {
+            const tbody = document.getElementById('statsBody');
+            
+            if (Object.keys(historique.compteurs).length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Aucune donnée</td></tr>';
+                return;
+            }
+
+            const stats = Object.entries(historique.compteurs).map(([nom, fonctions]) => ({
+                nom,
+                podium: fonctions.Podium,
+                perche: fonctions.Perche,
+                total: fonctions.Podium + fonctions.Perche
+            })).sort((a, b) => b.total - a.total);
+
+            tbody.innerHTML = stats.map(s => `
+                <tr>
+                    <td><strong>${s.nom}</strong></td>
+                    <td>${s.podium}</td>
+                    <td>${s.perche}</td>
+                    <td><strong>${s.total}</strong></td>
+                </tr>
+            `).join('');
+        }
+
+        // Initialisation
+        afficherDate();
+        afficherHistoriqueComplet();
+        afficherStatistiques();
+        
+        // Définir la date d'aujourd'hui par défaut dans le sélecteur
+        document.getElementById('dateAttribution').value = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
